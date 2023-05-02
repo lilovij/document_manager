@@ -1,0 +1,34 @@
+CREATE TABLE invoice_docs (
+id int NOT NULL AUTO_INCREMENT,
+number varchar(10),
+date timestamp,
+user varchar(20),
+total_sum int,
+currency varchar(10),
+rate double,
+product varchar(20),
+product_quantity int,
+PRIMARY KEY (id)
+);
+
+CREATE TABLE payment_docs (
+id int NOT NULL AUTO_INCREMENT,
+number varchar(10),
+date timestamp,
+user varchar(20),
+employee varchar(20),
+PRIMARY KEY (id)
+);
+
+CREATE TABLE app_for_payment_docs (
+id int NOT NULL AUTO_INCREMENT,
+number varchar(10),
+date timestamp,
+user varchar(20),
+partner varchar(20),
+total_sum int,
+currency varchar(10),
+rate double,
+commission double,
+PRIMARY KEY (id)
+);
