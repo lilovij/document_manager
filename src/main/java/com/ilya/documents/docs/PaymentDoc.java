@@ -47,6 +47,20 @@ public class PaymentDoc implements Document {
 				"Сотрудник: " + employee + "\n";
 	}
 
+	@Override
+	public String toString() {
+		return "PaymentDoc{" +
+				"name='" + name + '\'' +
+				", number='" + number + '\'' +
+				", date=" + date +
+				", user='" + user + '\'' +
+				", totalSum=" + totalSum +
+				", employee='" + employee + '\'' +
+				", infoForTable='" + infoForTable + '\'' +
+				", isForDelete=" + isForDelete +
+				'}';
+	}
+
 	public boolean toDelete() {
 		return isForDelete.isSelected();
 	}
@@ -60,10 +74,6 @@ public class PaymentDoc implements Document {
 		this.isForDelete = isForDelete;
 	}
 
-	@Override
-	public String toString() {
-		return "Накладная от " + date + " номер " + number;
-	}
 
 	public String getName() {
 		return name;

@@ -6,25 +6,38 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ilya.documents.controller.MainFormController">
-    <children>
-        <Button layoutX="468.0" layoutY="13.0" mnemonicParsing="false" onAction="#onInvoiceButtonClick" prefHeight="25.0" prefWidth="110.0" text="Накладная" AnchorPane.rightAnchor="23.0" />
-        <Button layoutX="468.0" layoutY="48.0" mnemonicParsing="false" onAction="#onPaymentButtonClick" prefHeight="25.0" prefWidth="110.0" text="Платежка" AnchorPane.rightAnchor="23.0" />
-        <Button layoutX="468.0" layoutY="83.0" mnemonicParsing="false" onAction="#onApplicationForPaymentButtonClick" prefHeight="25.0" prefWidth="110.0" text="Заявка на оплату" AnchorPane.rightAnchor="23.0" />
-        <Button layoutX="468.0" layoutY="118.0" mnemonicParsing="false" onAction="#onSaveButtonClick" prefHeight="25.0" prefWidth="110.0" text="Сохранить" AnchorPane.rightAnchor="23.0" />
-        <Button layoutX="468.0" layoutY="153.0" mnemonicParsing="false" onAction="#onLoadButtonClick" prefHeight="25.0" prefWidth="110.0" text="Загрузить" AnchorPane.rightAnchor="23.0" />
-        <Button layoutX="468.0" layoutY="188.0" mnemonicParsing="false" onAction="#onOpenDocButtonClick" prefHeight="25.0" prefWidth="110.0" text="Просмотр" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="188.0" />
-        <Button fx:id="exitButton" layoutX="468.0" layoutY="343.0" mnemonicParsing="false" onAction="#onExitButtonClick" prefHeight="25.0" prefWidth="110.0" text="Выход" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="23.0" />
-        <TableView fx:id="tableView" layoutX="14.0" layoutY="13.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="287.0" prefWidth="263.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="158.0" AnchorPane.topAnchor="13.0">
-            <columns>
-                <TableColumn fx:id="isForDeleteColumn" prefWidth="33.0" />
-                <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="200.0" prefWidth="395.0" resizable="false" text="Documents" />
-            </columns>
-        </TableView>
-        <Button layoutX="418.0" layoutY="13.0" mnemonicParsing="false" onAction="#onRefreshButtonClick" prefHeight="25.0" prefWidth="25.0" text="⇄" AnchorPane.rightAnchor="158.0" AnchorPane.topAnchor="13.0">
-         <font>
-            <Font name="MS Reference Sans Serif" size="12.0" />
-         </font></Button>
-        <Button layoutX="468.0" layoutY="223.0" mnemonicParsing="false" onAction="#onDeleteButtonClick" prefHeight="25.0" prefWidth="110.0" text="Удалить" AnchorPane.rightAnchor="23.0" />
-    </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.ilya.documents.controller.MainFormController">
+    <Button layoutX="468.0" layoutY="13.0" mnemonicParsing="false" onAction="#onInvoiceButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Накладная" AnchorPane.rightAnchor="23.0"/>
+    <Button layoutX="468.0" layoutY="48.0" mnemonicParsing="false" onAction="#onPaymentButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Платежка" AnchorPane.rightAnchor="23.0"/>
+    <Button layoutX="468.0" layoutY="83.0" mnemonicParsing="false" onAction="#onApplicationForPaymentButtonClick"
+            prefHeight="25.0" prefWidth="110.0" text="Заявка на оплату" AnchorPane.rightAnchor="23.0"/>
+    <Button layoutX="468.0" layoutY="118.0" mnemonicParsing="false" onAction="#onSaveButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Сохранить" AnchorPane.rightAnchor="23.0"/>
+    <Button layoutX="468.0" layoutY="153.0" mnemonicParsing="false" onAction="#onLoadButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Загрузить" AnchorPane.rightAnchor="23.0"/>
+    <Button layoutX="468.0" layoutY="188.0" mnemonicParsing="false" onAction="#onOpenDocButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Просмотр" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="188.0"/>
+    <Button layoutX="468.0" layoutY="343.0" mnemonicParsing="false" onAction="#onExitButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Выход" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="23.0"/>
+    <TableView fx:id="tableView" layoutX="14.0" layoutY="13.0" maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308" prefHeight="287.0" prefWidth="263.0" AnchorPane.bottomAnchor="13.0"
+               AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="158.0" AnchorPane.topAnchor="13.0">
+        <columns>
+            <TableColumn fx:id="isForDeleteColumn" prefWidth="24.0"/>
+            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="200.0"
+                         prefWidth="404.0" resizable="false" text="Documents"/>
+        </columns>
+    </TableView>
+    <Button layoutX="418.0" layoutY="13.0" mnemonicParsing="false" onAction="#onRefreshButtonClick" prefHeight="25.0"
+            prefWidth="25.0" text="⇄" AnchorPane.rightAnchor="158.0" AnchorPane.topAnchor="13.0">
+        <font>
+        <Font name="MS Reference Sans Serif" size="12.0"/>
+        </font>
+    </Button>
+    <Button layoutX="468.0" layoutY="223.0" mnemonicParsing="false" onAction="#onDeleteButtonClick" prefHeight="25.0"
+            prefWidth="110.0" text="Удалить" AnchorPane.rightAnchor="23.0"/>
 </AnchorPane>

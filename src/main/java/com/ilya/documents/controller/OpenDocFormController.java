@@ -18,7 +18,6 @@ public class OpenDocFormController extends Application implements Initializable 
 	private Document document;
 
 	public void setDocument(Document document) {
-		System.out.println("FORM SET OPEN: " + document);
 		this.document = document;
 	}
 
@@ -36,6 +35,7 @@ public class OpenDocFormController extends Application implements Initializable 
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
+		textArea.setEditable(false);
 		document = MainFormController.docToShow;
 		textArea.appendText(document.getDocText());
 	}

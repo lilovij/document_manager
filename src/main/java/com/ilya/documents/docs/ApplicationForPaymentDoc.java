@@ -47,11 +47,6 @@ public class ApplicationForPaymentDoc implements Document {
 	}
 
 	@Override
-	public String toString() {
-		return "Заявка на оплату от " + date + " номер " + number;
-	}
-
-	@Override
 	public String getDocText() {
 		return name + "\nНомер: " + number + "\n" +
 				"Дата: " + date.toString() + "\n" +
@@ -61,6 +56,23 @@ public class ApplicationForPaymentDoc implements Document {
 				"Валюта: " + currency + "\n" +
 				"Курс: " + rate + "\n" +
 				"Коммиссия: " + commission + "\n";
+	}
+
+	@Override
+	public String toString() {
+		return "ApplicationForPaymentDoc{" +
+				"name='" + name + '\'' +
+				", number='" + number + '\'' +
+				", date=" + date +
+				", user='" + user + '\'' +
+				", partner='" + partner + '\'' +
+				", totalSum=" + totalSum +
+				", currency='" + currency + '\'' +
+				", rate=" + rate +
+				", commission=" + commission +
+				", infoForTable='" + infoForTable + '\'' +
+				", isForDelete=" + isForDelete +
+				'}';
 	}
 
 	public boolean toDelete() {

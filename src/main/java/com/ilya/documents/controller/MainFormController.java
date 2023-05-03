@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -40,12 +41,10 @@ public class MainFormController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		isForDeleteColumn.setCellValueFactory(new PropertyValueFactory<>("isForDelete"));
-
-
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("infoForTable"));
-		nameColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(35));
+		nameColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(26));
 
-		// Загрузка тестовых данных:
+		//		Загрузка тестовых данных:
 		DocumentManager documentManager = new DocumentManager();
 		documentManager.addDocument(new PaymentDoc("003", "user3", 3000, "employee3"));
 		documentManager.addDocument(new InvoiceDoc("54321", "Jane Smith", 200, "EUR", 1.2, "Product 2", 2));
@@ -56,38 +55,58 @@ public class MainFormController implements Initializable {
 		documentManager.addDocument(new ApplicationForPaymentDoc("004", "user4", "partner4", 4000, "EUR", 1.2, 0.1));
 		documentManager.addDocument(new InvoiceDoc("67890", "Bob Johnson", 150, "GBP", 1.5, "Product 3", 3));
 		documentManager.addDocument(new ApplicationForPaymentDoc("002", "user2", "partner2", 2000, "EUR", 1.2, 0.1));
-
-		Thread refreshTableThread = new Thread(() -> {
-			while (true) {
-				onRefreshButtonClick();
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-		});
-		refreshTableThread.start();
-
+		refreshTable();
 	}
 
 	@FXML
 	protected void onInvoiceButtonClick() throws IOException {
 		Stage stage = new Stage();
 		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("invoice-form.fxml"));
-		Scene scene = new Scene(fxmlLoader.load());
+		Parent root = fxmlLoader.load();
+		InvoiceFormController invoiceFormController = fxmlLoader.getController();
+		invoiceFormController.setTableView(tableView);
 		stage.setTitle("Создание накладной");
 		stage.setMinHeight(390);
 		stage.setMinWidth(315);
 		stage.setMaxHeight(390);
 		stage.setMaxWidth(315);
-		stage.setScene(scene);
+		stage.setScene(new Scene(root));
 		stage.show();
 	}
 
-	// Чтение файлов и добавление объектов в таблицу
-	// на их основе
+	@FXML
+	protected void onPaymentButtonClick() throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("payment-form.fxml"));
+		Parent root = fxmlLoader.load();
+		PaymentFormController paymentFormController = fxmlLoader.getController();
+		paymentFormController.setTableView(tableView);
+		stage.setTitle("Создание платежки");
+		stage.setMinHeight(390);
+		stage.setMinWidth(315);
+		stage.setMaxHeight(390);
+		stage.setMaxWidth(315);
+		stage.setScene(new Scene(root));
+		stage.show();
+	}
+
+	@FXML
+	protected void onApplicationForPaymentButtonClick() throws IOException {
+		Stage stage = new Stage();
+		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("application-for-payment-form.fxml"));
+		Parent root = fxmlLoader.load();
+		ApplicationForPaymentController applicationForPaymentController = fxmlLoader.getController();
+		applicationForPaymentController.setTableView(tableView);
+		stage.setTitle("Создание заявки на оплату");
+		stage.setMinHeight(390);
+		stage.setMinWidth(315);
+		stage.setMaxHeight(390);
+		stage.setMaxWidth(315);
+		stage.setScene(new Scene(root));
+		stage.show();
+	}
+
+	// Чтение файлов и добавление объектов в таблицу на их основе
 	@FXML
 	protected void onLoadButtonClick() {
 		FileChooser fileChooser = new FileChooser();
@@ -102,7 +121,6 @@ public class MainFormController implements Initializable {
 			try (BufferedReader fileReader = new BufferedReader(new FileReader(file))) {
 				Document document;
 				String tempStr = fileReader.readLine().trim();
-				System.out.println(tempStr);
 				if (tempStr.equals("Накладная")) {
 					document = new InvoiceDoc(
 							parseFieldFromDoc(fileReader.readLine()),
@@ -144,7 +162,7 @@ public class MainFormController implements Initializable {
 				Alert alert = new Alert(Alert.AlertType.INFORMATION);
 				alert.setTitle("Ошибка");
 				alert.setHeaderText("Ошибка чтения");
-				alert.setContentText("Файл, который Вы пытаетесь открыть, поврежден.");
+				alert.setContentText("Файл, который Вы пытаетесь открыть, не является документом.");
 				alert.showAndWait().ifPresent(rs -> {
 				});
 			}
@@ -188,34 +206,6 @@ public class MainFormController implements Initializable {
 	}
 
 	@FXML
-	protected void onPaymentButtonClick() throws IOException {
-		Stage stage = new Stage();
-		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("payment-form.fxml"));
-		Scene scene = new Scene(fxmlLoader.load());
-		stage.setMinHeight(390);
-		stage.setMinWidth(315);
-		stage.setMaxHeight(390);
-		stage.setMaxWidth(315);
-		stage.setTitle("Создание платежки");
-		stage.setScene(scene);
-		stage.show();
-	}
-
-	@FXML
-	protected void onApplicationForPaymentButtonClick() throws IOException {
-		Stage stage = new Stage();
-		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("application-for-payment-form.fxml"));
-		Scene scene = new Scene(fxmlLoader.load());
-		stage.setTitle("Создание заявки на оплату");
-		stage.setMinHeight(390);
-		stage.setMinWidth(315);
-		stage.setMaxHeight(390);
-		stage.setMaxWidth(315);
-		stage.setScene(scene);
-		stage.show();
-	}
-
-	@FXML
 	protected void onOpenDocButtonClick() throws IOException {
 		docToShow = tableView.getSelectionModel().getSelectedItem();
 		if (docToShow != null) {
@@ -246,6 +236,10 @@ public class MainFormController implements Initializable {
 
 	@FXML
 	protected void onRefreshButtonClick() {
+		refreshTable();
+	}
+
+	protected void refreshTable() {
 		DocumentManager documentManager = new DocumentManager();
 		ObservableList<Document> documentsData = FXCollections.observableArrayList(documentManager.getAllDocuments());
 		tableView.getItems().clear();

@@ -61,14 +61,9 @@ public class InvoiceDoc implements Document {
 		return isForDelete.isSelected();
 	}
 
-
 	@Override
 	public CheckBox getIsForDelete() {
 		return isForDelete;
-	}
-
-	public void setIsForDelete(CheckBox isForDelete) {
-		this.isForDelete = isForDelete;
 	}
 
 	@Override
