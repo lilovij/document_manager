@@ -1,36 +1,19 @@
 package com.ilya.documents.docs;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "app_for_payment_docs")
 public class ApplicationForPaymentDoc implements Document {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	@Column(name = "number")
+	private final String name = "Заявка на оплату";
 	private String number;
-	@Column(name = "date")
 	private LocalDate date;
-	@Column(name = "user")
 	private String user;
-	@Column(name = "partner")
 	private String partner;
-	@Column(name = "total_sum")
 	private int totalSum;
-	@Column(name = "currency")
 	private String currency;
-	@Column(name = "rate")
 	private double rate;
-	@Column(name = "commission")
 	private double commission;
-
 	private String infoForTable;
-
 	private boolean isForDelete = false;
 
 	public ApplicationForPaymentDoc(String number, String user, String partner, int totalSum, String currency, double rate, double commission) {
@@ -42,15 +25,50 @@ public class ApplicationForPaymentDoc implements Document {
 		this.currency = currency;
 		this.rate = rate;
 		this.commission = commission;
-		this.infoForTable = "Заявка на оплату от " + date + " номер " + number;
+		this.infoForTable = name + " от " + date + " номер " + number;
+	}
+
+	public ApplicationForPaymentDoc(String number, LocalDate date, String user, String partner, int totalSum, String currency, double rate, double commission) {
+		this.number = number;
+		this.date = date;
+		this.user = user;
+		this.partner = partner;
+		this.totalSum = totalSum;
+		this.currency = currency;
+		this.rate = rate;
+		this.commission = commission;
+		this.infoForTable = name + " от " + date + " номер " + number;
 	}
 
 	@Override
 	public String toString() {
 		return "Заявка на оплату от " + date + " номер " + number;
 	}
-	public int getId() {
-		return id;
+
+	@Override
+	public String getDocText() {
+		return name + "\nНомер: " + number + "\n" +
+				"Дата: " + date.toString() + "\n" +
+				"Пользователь: " + user + "\n" +
+				"Партнер: " + partner + "\n" +
+				"Сумма: " + totalSum + "\n" +
+				"Валюта: " + currency + "\n" +
+				"Курс: " + rate + "\n" +
+				"Коммиссия: " + commission + "\n";
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public boolean getIsForDelete() {
+		return isForDelete;
+	}
+
+	@Override
+	public void setIsForDelete(boolean forDelete) {
+		isForDelete = forDelete;
 	}
 
 	public String getInfoForTable() {
@@ -61,9 +79,6 @@ public class ApplicationForPaymentDoc implements Document {
 		this.infoForTable = infoForTable;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getNumber() {
 		return number;
 	}
@@ -128,13 +143,4 @@ public class ApplicationForPaymentDoc implements Document {
 		this.commission = commission;
 	}
 
-	@Override
-	public boolean getIs() {
-		return false;
-	}
-
-	@Override
-	public void setIs(boolean forDelete) {
-
-	}
 }

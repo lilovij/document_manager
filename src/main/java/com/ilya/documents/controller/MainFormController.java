@@ -1,26 +1,30 @@
 package com.ilya.documents.controller;
 
 import com.ilya.documents.HelloApplication;
-import com.ilya.documents.docs.Document;
-import com.ilya.documents.docs.DocumentManager;
-import com.ilya.documents.docs.InvoiceDoc;
+import com.ilya.documents.docs.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
+
 public class MainFormController implements Initializable {
+
+	public static Document docToShow;
 
 	@FXML
 	private TableView<Document> tableView;
@@ -33,27 +37,28 @@ public class MainFormController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		isColumn.setCellValueFactory(new PropertyValueFactory<>("is"));
+		isColumn.setCellValueFactory(new PropertyValueFactory<>("isForDelete"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("infoForTable"));
-		nameColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(1.0));
-		InvoiceDoc invoice1 = new InvoiceDoc("12345", "John Doe", 100, "USD", 1.0, "Product 1", 1);
-		InvoiceDoc invoice2 = new InvoiceDoc("54321", "Jane Smith", 200, "EUR", 1.2, "Product 2", 2);
-		InvoiceDoc invoice3 = new InvoiceDoc("67890", "Bob Johnson", 150, "GBP", 1.5, "Product 3", 3);
-		InvoiceDoc invoice4 = new InvoiceDoc("09876", "Alice Jones", 300, "JPY", 0.009, "Product 4", 4);
-		InvoiceDoc invoice5 = new InvoiceDoc("24680", "Sam Brown", 50, "AUD", 0.75, "Product 5", 5);
+		nameColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(35));
 		DocumentManager documentManager = new DocumentManager();
-		documentManager.addDocument(invoice1);
-		documentManager.addDocument(invoice2);
-		documentManager.addDocument(invoice3);
-		documentManager.addDocument(invoice4);
-		documentManager.addDocument(invoice5);
+		documentManager.addDocument(new PaymentDoc("003", "user3", 3000, "employee3"));
+		documentManager.addDocument(new InvoiceDoc("54321", "Jane Smith", 200, "EUR", 1.2, "Product 2", 2));
+		documentManager.addDocument(new PaymentDoc("005", "user5", 5000, "employee5"));
+		documentManager.addDocument(new PaymentDoc("004", "user4", 4000, "employee4"));
+		documentManager.addDocument(new InvoiceDoc("09876", "Alice Jones", 300, "JPY", 0.009, "Product 4", 4));
+		documentManager.addDocument(new ApplicationForPaymentDoc("001", "user1", "partner1", 1000, "USD", 1.0, 0.0));
+		documentManager.addDocument(new ApplicationForPaymentDoc("004", "user4", "partner4", 4000, "EUR", 1.2, 0.1));
+		documentManager.addDocument(new InvoiceDoc("67890", "Bob Johnson", 150, "GBP", 1.5, "Product 3", 3));
+		documentManager.addDocument(new ApplicationForPaymentDoc("002", "user2", "partner2", 2000, "EUR", 1.2, 0.1));
 
 		Thread thread = new Thread(() -> {
-			onRefreshButtonClick();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-                e.printStackTrace();
+			while (true) {
+				onRefreshButtonClick();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		thread.start();
@@ -66,8 +71,113 @@ public class MainFormController implements Initializable {
 		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("invoice-form.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("Создание накладной");
+		stage.setMinHeight(390);
+		stage.setMinWidth(315);
+		stage.setMaxHeight(390);
+		stage.setMaxWidth(315);
 		stage.setScene(scene);
 		stage.show();
+	}
+
+	// Чтение файлов и добавление объектов в таблицу
+	// на их основе
+	@FXML
+	protected void onLoadButtonClick() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Выберите файл .txt");
+		fileChooser.getExtensionFilters().add(
+				new FileChooser.ExtensionFilter("Текстовый файл (*.txt)", "*.txt")
+		);
+		Stage stage = new Stage();
+		File file = fileChooser.showOpenDialog(stage);
+		DocumentManager documentManager = new DocumentManager();
+		if (file != null) {
+			try (BufferedReader fileReader = new BufferedReader(new FileReader(file))) {
+				Document document;
+				String tempStr = fileReader.readLine().trim();
+				System.out.println(tempStr);
+				if (tempStr.equals("Накладная")) {
+					document = new InvoiceDoc(
+							parseFieldFromDoc(fileReader.readLine()),
+							LocalDate.parse(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine()),
+							Integer.parseInt(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine()),
+							Double.parseDouble(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine()),
+							Integer.parseInt(parseFieldFromDoc(fileReader.readLine()))
+					);
+					documentManager.addDocument(document);
+				} else if (tempStr.equals("Платежка")) {
+					document = new PaymentDoc(
+							parseFieldFromDoc(fileReader.readLine()),
+							LocalDate.parse(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine()),
+							Integer.parseInt(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine())
+					);
+					documentManager.addDocument(document);
+				} else if (tempStr.equals("Заявка на оплату")) {
+					document = new ApplicationForPaymentDoc(
+							parseFieldFromDoc(fileReader.readLine()),
+							LocalDate.parse(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine()),
+							parseFieldFromDoc(fileReader.readLine()),
+							Integer.parseInt(parseFieldFromDoc(fileReader.readLine())),
+							parseFieldFromDoc(fileReader.readLine()),
+							Double.parseDouble(parseFieldFromDoc(fileReader.readLine())),
+							Double.parseDouble(parseFieldFromDoc(fileReader.readLine()))
+					);
+					documentManager.addDocument(document);
+				}
+
+			} catch (IOException fileReadingException) {
+				fileReadingException.printStackTrace();
+			} catch (Exception corruptedFiles) {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("Ошибка");
+				alert.setHeaderText("Ошибка чтения");
+				alert.setContentText("Файл, который Вы пытаетесь открыть, поврежден.");
+				alert.showAndWait().ifPresent(rs -> {
+				});
+			}
+			onRefreshButtonClick();
+		}
+	}
+
+	// Необходим для парсинга строк из файлов
+	private String parseFieldFromDoc(String field) {
+		StringBuilder stringBuilder = new StringBuilder(field);
+		while (stringBuilder.length() > 0) {
+			if (stringBuilder.charAt(0) == ':') {
+				stringBuilder.deleteCharAt(0);
+				stringBuilder.deleteCharAt(0);
+				break;
+			}
+			stringBuilder.deleteCharAt(0);
+		}
+		return stringBuilder.toString();
+	}
+
+	@FXML
+	protected void onSaveButtonClick() {
+		Document document = tableView.getSelectionModel().getSelectedItem();
+		if (document != null) {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Сохранить как .txt");
+			fileChooser.getExtensionFilters().add(
+					new FileChooser.ExtensionFilter("Текстовый файл (*.txt)", "*.txt")
+			);
+			Stage stage = new Stage();
+			File file = fileChooser.showSaveDialog(stage);
+			if (file != null) {
+				try (FileWriter fileWriter = new FileWriter(file)) {
+					fileWriter.write(document.getDocText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@FXML
@@ -75,6 +185,10 @@ public class MainFormController implements Initializable {
 		Stage stage = new Stage();
 		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("payment-form.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
+		stage.setMinHeight(390);
+		stage.setMinWidth(315);
+		stage.setMaxHeight(390);
+		stage.setMaxWidth(315);
 		stage.setTitle("Создание платежки");
 		stage.setScene(scene);
 		stage.show();
@@ -86,19 +200,36 @@ public class MainFormController implements Initializable {
 		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("application-for-payment-form.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("Создание заявки на оплату");
+		stage.setMinHeight(390);
+		stage.setMinWidth(315);
+		stage.setMaxHeight(390);
+		stage.setMaxWidth(315);
 		stage.setScene(scene);
 		stage.show();
+	}
+
+	@FXML
+	protected void onOpenDocButtonClick() throws IOException {
+		docToShow = tableView.getSelectionModel().getSelectedItem();
+		if (docToShow != null) {
+			Stage stage = new Stage();
+			FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("open-doc-form.fxml"));
+			Scene scene = new Scene(fxmlLoader.load());
+			stage.setMinHeight(400);
+			stage.setMinWidth(400);
+			stage.setTitle("Просмотр документа");
+			stage.setScene(scene);
+			stage.show();
+		}
 	}
 
 	@FXML
 	protected void onDeleteButtonClick() {
 		DocumentManager documentManager = new DocumentManager();
 		List<Document> documents = documentManager.getAllDocuments();
-		System.out.println(documents);
 		for (int i = documents.size() - 1; i > -1; i--) {
 			Document document = documents.get(i);
-			System.out.println(document + " " + document.getIs());
-			if (document.getIs()) {
+			if (document.getIsForDelete()) {
 				documents.remove(i);
 			}
 		}
@@ -109,14 +240,10 @@ public class MainFormController implements Initializable {
 	@FXML
 	protected void onCellClick() {
 		tableView.setOnMouseClicked(event -> {
-			if (event.getClickCount() == 1 && tableView.getSelectionModel().getSelectedItem() != null) {
-				Document document = tableView.getSelectionModel().getSelectedItem();
-				document.setIs(!document.getIs());
-
-				tableView.refresh();
-			}
 			if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("DoubleClick");
+				Document document = tableView.getSelectionModel().getSelectedItem();
+				document.setIsForDelete(!document.getIsForDelete());
+				tableView.refresh();
 			}
 		});
 
@@ -125,11 +252,9 @@ public class MainFormController implements Initializable {
 	@FXML
 	protected void onRefreshButtonClick() {
 		DocumentManager documentManager = new DocumentManager();
-		List<Document> documents = documentManager.getAllDocuments();
 		ObservableList<Document> documentsData = FXCollections.observableArrayList(documentManager.getAllDocuments());
 		tableView.getItems().clear();
-		System.out.println(documents);
-		tableView.getItems().addAll(documents);
+		tableView.getItems().addAll(documentsData);
 		tableView.refresh();
 	}
 

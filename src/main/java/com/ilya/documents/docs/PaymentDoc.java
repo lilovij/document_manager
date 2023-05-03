@@ -1,25 +1,14 @@
 package com.ilya.documents.docs;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
-@Entity
-@Table(name = "payment_docs")
+
 public class PaymentDoc implements Document {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	@Column(name = "number")
+	private final String name = "Платежка";
 	private String number;
-	@Column(name = "date")
 	private LocalDate date;
-	@Column(name = "user")
 	private String user;
-	@Column(name = "total_sum")
 	private int totalSum;
-	@Column(name = "employee")
 	private String employee;
 
 	private String infoForTable;
@@ -32,12 +21,34 @@ public class PaymentDoc implements Document {
 		this.user = user;
 		this.totalSum = totalSum;
 		this.employee = employee;
-		this.infoForTable = "Накладная от " + date + " номер " + number;
+		this.infoForTable = name + " от " + date + " номер " + number;
+	}
+
+	public PaymentDoc(String number, LocalDate date, String user, int totalSum, String employee) {
+		this.number = number;
+		this.date = date;
+		this.user = user;
+		this.totalSum = totalSum;
+		this.employee = employee;
+		this.infoForTable = name + " от " + date + " номер " + number;
+	}
+
+	@Override
+	public String getDocText() {
+		return name + "\nНомер: " + number + "\n" +
+				"Дата: " + date.toString() + "\n" +
+				"Пользователь: " + user + "\n" +
+				"Сумма: " + totalSum + "\n" +
+				"Сотрудник: " + employee + "\n";
 	}
 
 	@Override
 	public String toString() {
 		return "Накладная от " + date + " номер " + number;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public String getInfoForTable() {
@@ -48,20 +59,12 @@ public class PaymentDoc implements Document {
 		this.infoForTable = infoForTable;
 	}
 
-	public boolean getIs() {
+	public boolean getIsForDelete() {
 		return isForDelete;
 	}
 
-	public void setIs(boolean forDelete) {
+	public void setIsForDelete(boolean forDelete) {
 		isForDelete = forDelete;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getNumber() {

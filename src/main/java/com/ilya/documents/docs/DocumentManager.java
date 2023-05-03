@@ -17,11 +17,10 @@ public class DocumentManager {
 		return documents;
 	}
 
-	synchronized public void removeDocument(Document document) {
-		if (documents.size() == 1) documents.clear();
-		documents.remove(document);
-
-	}
+//	synchronized public void removeDocument(Document document) {
+//		if (documents.size() == 1) documents.clear();
+//		documents.remove(document);
+//	}
 
 	synchronized public void saveAllDocuments(List<Document> documents) {
 		DocumentManager.documents = new ArrayList<>(documents);

@@ -2,7 +2,10 @@ package com.ilya.documents.docs;
 
 public interface Document {
 
-	public boolean getIs();
+	boolean getIsForDelete();
 
-	public void setIs(boolean forDelete);
+	void setIsForDelete(boolean forDelete);
+
+	String getDocText();
+
 }

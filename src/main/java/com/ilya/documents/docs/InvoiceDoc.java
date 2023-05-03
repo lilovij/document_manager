@@ -1,11 +1,10 @@
 package com.ilya.documents.docs;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
 public class InvoiceDoc implements Document {
 
-	private int id;
+	private final String name = "Накладная";
 	private String number;
 	private LocalDate date;
 	private String user;
@@ -15,7 +14,7 @@ public class InvoiceDoc implements Document {
 	private String product;
 	private int productQuantity;
 	private String infoForTable;
-	private boolean is = false;
+	private boolean isForDelete = false;
 
 	public InvoiceDoc(String number, String user, int totalSum, String currency, double rate, String product, int productQuantity) {
 		this.number = number;
@@ -26,26 +25,43 @@ public class InvoiceDoc implements Document {
 		this.rate = rate;
 		this.product = product;
 		this.productQuantity = productQuantity;
-		this.infoForTable = "Платежка от " + date + " номер " + number;
+		this.infoForTable = name + " от " + date + " номер " + number;
+	}
+	public InvoiceDoc(String number, LocalDate date, String user, int totalSum, String currency, double rate, String product, int productQuantity) {
+		this.number = number;
+		this.date = date;
+		this.user = user;
+		this.totalSum = totalSum;
+		this.currency = currency;
+		this.rate = rate;
+		this.product = product;
+		this.productQuantity = productQuantity;
+		this.infoForTable = name + " от " + date + " номер " + number;
 	}
 
 	@Override
-	public boolean getIs() {
-		return is;
+	public String getDocText() {
+		return name + "\nНомер: " + number + "\n" +
+				"Дата: " + date.toString() + "\n" +
+				"Пользователь: " + user + "\n" +
+				"Сумма: " + totalSum + "\n" +
+				"Валюта: " + currency + "\n" +
+				"Курс: " + rate + "\n" +
+				"Продукт: " + product + "\n" +
+				"Количество продукции: " + productQuantity + "\n";
 	}
 
-	@Override
-	public void setIs(boolean forDelete) {
-		is = forDelete;
+	public boolean getIsForDelete() {
+		return isForDelete;
 	}
 
-	public InvoiceDoc() {
+	public void setIsForDelete(boolean forDelete) {
+		isForDelete = forDelete;
 	}
 
 	@Override
 	public String toString() {
 		return "InvoiceDoc{" +
-				"id=" + id +
 				", number='" + number + '\'' +
 				", date=" + date +
 				", user='" + user + '\'' +
@@ -55,8 +71,20 @@ public class InvoiceDoc implements Document {
 				", product='" + product + '\'' +
 				", productQuantity=" + productQuantity +
 				", infoForTable='" + infoForTable + '\'' +
-				", is=" + is +
+				", is=" + isForDelete +
 				'}';
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public boolean isForDelete() {
+		return isForDelete;
+	}
+
+	public void setForDelete(boolean forDelete) {
+		isForDelete = forDelete;
 	}
 
 	public String getInfoForTable() {
@@ -65,14 +93,6 @@ public class InvoiceDoc implements Document {
 
 	public void setInfoForTable(String infoForTable) {
 		this.infoForTable = infoForTable;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getNumber() {
