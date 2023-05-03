@@ -2,13 +2,15 @@ package com.ilya.documents.controller;
 
 import com.ilya.documents.docs.ApplicationForPaymentDoc;
 import com.ilya.documents.docs.DocumentManager;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class ApplicationForPaymentController {
+public class ApplicationForPaymentController extends Application {
 
 	@FXML
 	public TextField numberFiled, userTextField, partnerTextField, totalSumTextField, currencyTextField, rateTextField, comissionTextField;
@@ -42,5 +44,9 @@ public class ApplicationForPaymentController {
 
 	}
 
+	@Override
+	public void start(Stage stage) {
+		stage.setOnCloseRequest(e -> Platform.exit());
+	}
 }
 

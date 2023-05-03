@@ -1,16 +1,16 @@
 package com.ilya.documents.controller;
 
-import com.ilya.documents.HelloApplication;
+import com.ilya.documents.MainApplication;
 import com.ilya.documents.docs.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -35,11 +35,17 @@ public class MainFormController implements Initializable {
 	@FXML
 	private TableColumn<Document, String> nameColumn;
 
+
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		isColumn.setCellValueFactory(new PropertyValueFactory<>("isForDelete"));
+		isColumn.setCellFactory(CheckBoxTableCell.forTableColumn(isColumn));
+		isColumn.setEditable(true);
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("infoForTable"));
 		nameColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(35));
+
+		// Загрузка тестовых данных:
 		DocumentManager documentManager = new DocumentManager();
 		documentManager.addDocument(new PaymentDoc("003", "user3", 3000, "employee3"));
 		documentManager.addDocument(new InvoiceDoc("54321", "Jane Smith", 200, "EUR", 1.2, "Product 2", 2));
@@ -51,24 +57,25 @@ public class MainFormController implements Initializable {
 		documentManager.addDocument(new InvoiceDoc("67890", "Bob Johnson", 150, "GBP", 1.5, "Product 3", 3));
 		documentManager.addDocument(new ApplicationForPaymentDoc("002", "user2", "partner2", 2000, "EUR", 1.2, 0.1));
 
-		Thread thread = new Thread(() -> {
+		Thread refreshTableThread = new Thread(() -> {
 			while (true) {
 				onRefreshButtonClick();
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
+
 		});
-		thread.start();
+		refreshTableThread.start();
 
 	}
 
 	@FXML
 	protected void onInvoiceButtonClick() throws IOException {
 		Stage stage = new Stage();
-		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("invoice-form.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("invoice-form.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("Создание накладной");
 		stage.setMinHeight(390);
@@ -183,7 +190,7 @@ public class MainFormController implements Initializable {
 	@FXML
 	protected void onPaymentButtonClick() throws IOException {
 		Stage stage = new Stage();
-		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("payment-form.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("payment-form.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setMinHeight(390);
 		stage.setMinWidth(315);
@@ -197,7 +204,7 @@ public class MainFormController implements Initializable {
 	@FXML
 	protected void onApplicationForPaymentButtonClick() throws IOException {
 		Stage stage = new Stage();
-		FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("application-for-payment-form.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("application-for-payment-form.fxml"));
 		Scene scene = new Scene(fxmlLoader.load());
 		stage.setTitle("Создание заявки на оплату");
 		stage.setMinHeight(390);
@@ -213,7 +220,7 @@ public class MainFormController implements Initializable {
 		docToShow = tableView.getSelectionModel().getSelectedItem();
 		if (docToShow != null) {
 			Stage stage = new Stage();
-			FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("open-doc-form.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("open-doc-form.fxml"));
 			Scene scene = new Scene(fxmlLoader.load());
 			stage.setMinHeight(400);
 			stage.setMinWidth(400);
@@ -246,7 +253,6 @@ public class MainFormController implements Initializable {
 				tableView.refresh();
 			}
 		});
-
 	}
 
 	@FXML
@@ -255,7 +261,14 @@ public class MainFormController implements Initializable {
 		ObservableList<Document> documentsData = FXCollections.observableArrayList(documentManager.getAllDocuments());
 		tableView.getItems().clear();
 		tableView.getItems().addAll(documentsData);
+		isColumn.setCellFactory(CheckBoxTableCell.forTableColumn(isColumn));
 		tableView.refresh();
+	}
+
+	@FXML
+	protected void onExitButtonClick() {
+		Platform.exit();
+		System.exit(0);
 	}
 
 }

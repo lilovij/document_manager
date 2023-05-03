@@ -2,13 +2,15 @@ package com.ilya.documents.controller;
 
 import com.ilya.documents.docs.DocumentManager;
 import com.ilya.documents.docs.InvoiceDoc;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class InvoiceFormController {
+public class InvoiceFormController extends Application {
 
 	@FXML
 	public TextField numberFiled, userTextField, totalSumTextField, currencyTextField, rateTextField, productTextField, productQuantityTextFiled;
@@ -42,4 +44,8 @@ public class InvoiceFormController {
 		}
 	}
 
+	@Override
+	public void start(Stage stage) {
+		stage.setOnCloseRequest(e -> Platform.exit());
+	}
 }
