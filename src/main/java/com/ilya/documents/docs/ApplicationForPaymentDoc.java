@@ -1,5 +1,7 @@
 package com.ilya.documents.docs;
 
+import javafx.scene.control.CheckBox;
+
 import java.time.LocalDate;
 
 public class ApplicationForPaymentDoc implements Document {
@@ -14,7 +16,7 @@ public class ApplicationForPaymentDoc implements Document {
 	private double rate;
 	private double commission;
 	private String infoForTable;
-	private boolean isForDelete = false;
+	private CheckBox isForDelete;
 
 	public ApplicationForPaymentDoc(String number, String user, String partner, int totalSum, String currency, double rate, double commission) {
 		this.number = number;
@@ -26,6 +28,8 @@ public class ApplicationForPaymentDoc implements Document {
 		this.rate = rate;
 		this.commission = commission;
 		this.infoForTable = name + " от " + date + " номер " + number;
+		this.isForDelete = new CheckBox();
+		isForDelete.setSelected(false);
 	}
 
 	public ApplicationForPaymentDoc(String number, LocalDate date, String user, String partner, int totalSum, String currency, double rate, double commission) {
@@ -38,6 +42,8 @@ public class ApplicationForPaymentDoc implements Document {
 		this.rate = rate;
 		this.commission = commission;
 		this.infoForTable = name + " от " + date + " номер " + number;
+		this.isForDelete = new CheckBox();
+		isForDelete.setSelected(false);
 	}
 
 	@Override
@@ -57,18 +63,20 @@ public class ApplicationForPaymentDoc implements Document {
 				"Коммиссия: " + commission + "\n";
 	}
 
-	public String getName() {
-		return name;
+	public boolean toDelete() {
+		return isForDelete.isSelected();
 	}
 
-	@Override
-	public boolean getIsForDelete() {
+	public CheckBox getIsForDelete() {
 		return isForDelete;
 	}
 
-	@Override
-	public void setIsForDelete(boolean forDelete) {
-		isForDelete = forDelete;
+	public void setIsForDelete(CheckBox isForDelete) {
+		this.isForDelete = isForDelete;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public String getInfoForTable() {

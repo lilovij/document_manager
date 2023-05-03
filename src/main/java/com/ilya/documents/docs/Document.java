@@ -1,11 +1,13 @@
 package com.ilya.documents.docs;
 
+import javafx.scene.control.CheckBox;
+
 public interface Document {
 
-	boolean getIsForDelete();
-
-	void setIsForDelete(boolean forDelete);
-
 	String getDocText();
+
+	CheckBox getIsForDelete();
+
+	boolean toDelete();
 
 }

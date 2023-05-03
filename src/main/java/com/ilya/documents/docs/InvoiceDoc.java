@@ -1,5 +1,7 @@
 package com.ilya.documents.docs;
 
+import javafx.scene.control.CheckBox;
+
 import java.time.LocalDate;
 
 public class InvoiceDoc implements Document {
@@ -14,7 +16,7 @@ public class InvoiceDoc implements Document {
 	private String product;
 	private int productQuantity;
 	private String infoForTable;
-	private boolean isForDelete = false;
+	private CheckBox isForDelete;
 
 	public InvoiceDoc(String number, String user, int totalSum, String currency, double rate, String product, int productQuantity) {
 		this.number = number;
@@ -26,6 +28,8 @@ public class InvoiceDoc implements Document {
 		this.product = product;
 		this.productQuantity = productQuantity;
 		this.infoForTable = name + " от " + date + " номер " + number;
+		this.isForDelete = new CheckBox();
+		isForDelete.setSelected(false);
 	}
 	public InvoiceDoc(String number, LocalDate date, String user, int totalSum, String currency, double rate, String product, int productQuantity) {
 		this.number = number;
@@ -37,6 +41,8 @@ public class InvoiceDoc implements Document {
 		this.product = product;
 		this.productQuantity = productQuantity;
 		this.infoForTable = name + " от " + date + " номер " + number;
+		this.isForDelete = new CheckBox();
+		isForDelete.setSelected(true);
 	}
 
 	@Override
@@ -51,12 +57,18 @@ public class InvoiceDoc implements Document {
 				"Количество продукции: " + productQuantity + "\n";
 	}
 
-	public boolean getIsForDelete() {
+	public boolean toDelete() {
+		return isForDelete.isSelected();
+	}
+
+
+	@Override
+	public CheckBox getIsForDelete() {
 		return isForDelete;
 	}
 
-	public void setIsForDelete(boolean forDelete) {
-		isForDelete = forDelete;
+	public void setIsForDelete(CheckBox isForDelete) {
+		this.isForDelete = isForDelete;
 	}
 
 	@Override
@@ -71,7 +83,6 @@ public class InvoiceDoc implements Document {
 				", product='" + product + '\'' +
 				", productQuantity=" + productQuantity +
 				", infoForTable='" + infoForTable + '\'' +
-				", is=" + isForDelete +
 				'}';
 	}
 
@@ -79,12 +90,8 @@ public class InvoiceDoc implements Document {
 		return name;
 	}
 
-	public boolean isForDelete() {
-		return isForDelete;
-	}
 
 	public void setForDelete(boolean forDelete) {
-		isForDelete = forDelete;
 	}
 
 	public String getInfoForTable() {

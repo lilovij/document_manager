@@ -1,5 +1,7 @@
 package com.ilya.documents.docs;
 
+import javafx.scene.control.CheckBox;
+
 import java.time.LocalDate;
 
 public class PaymentDoc implements Document {
@@ -10,10 +12,9 @@ public class PaymentDoc implements Document {
 	private String user;
 	private int totalSum;
 	private String employee;
-
 	private String infoForTable;
+	private CheckBox isForDelete;
 
-	private boolean isForDelete = false;
 
 	public PaymentDoc(String number, String user, int totalSum, String employee) {
 		this.number = number;
@@ -22,6 +23,8 @@ public class PaymentDoc implements Document {
 		this.totalSum = totalSum;
 		this.employee = employee;
 		this.infoForTable = name + " от " + date + " номер " + number;
+		this.isForDelete = new CheckBox();
+		isForDelete.setSelected(false);
 	}
 
 	public PaymentDoc(String number, LocalDate date, String user, int totalSum, String employee) {
@@ -31,6 +34,8 @@ public class PaymentDoc implements Document {
 		this.totalSum = totalSum;
 		this.employee = employee;
 		this.infoForTable = name + " от " + date + " номер " + number;
+		this.isForDelete = new CheckBox();
+		isForDelete.setSelected(false);
 	}
 
 	@Override
@@ -40,6 +45,19 @@ public class PaymentDoc implements Document {
 				"Пользователь: " + user + "\n" +
 				"Сумма: " + totalSum + "\n" +
 				"Сотрудник: " + employee + "\n";
+	}
+
+	public boolean toDelete() {
+		return isForDelete.isSelected();
+	}
+
+	@Override
+	public CheckBox getIsForDelete() {
+		return isForDelete;
+	}
+
+	public void setIsForDelete(CheckBox isForDelete) {
+		this.isForDelete = isForDelete;
 	}
 
 	@Override
@@ -59,13 +77,6 @@ public class PaymentDoc implements Document {
 		this.infoForTable = infoForTable;
 	}
 
-	public boolean getIsForDelete() {
-		return isForDelete;
-	}
-
-	public void setIsForDelete(boolean forDelete) {
-		isForDelete = forDelete;
-	}
 
 	public String getNumber() {
 		return number;

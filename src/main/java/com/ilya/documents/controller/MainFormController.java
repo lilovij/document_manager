@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -30,18 +32,16 @@ public class MainFormController implements Initializable {
 	private TableView<Document> tableView;
 
 	@FXML
-	private TableColumn<Document, Boolean> isColumn;
-
-	@FXML
 	private TableColumn<Document, String> nameColumn;
 
-
+	@FXML
+	private TableColumn<Document, CheckBox> isForDeleteColumn;
 
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		isColumn.setCellValueFactory(new PropertyValueFactory<>("isForDelete"));
-		isColumn.setCellFactory(CheckBoxTableCell.forTableColumn(isColumn));
-		isColumn.setEditable(true);
+		isForDeleteColumn.setCellValueFactory(new PropertyValueFactory<>("isForDelete"));
+
+
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("infoForTable"));
 		nameColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(35));
 
@@ -236,7 +236,7 @@ public class MainFormController implements Initializable {
 		List<Document> documents = documentManager.getAllDocuments();
 		for (int i = documents.size() - 1; i > -1; i--) {
 			Document document = documents.get(i);
-			if (document.getIsForDelete()) {
+			if (document.toDelete()) {
 				documents.remove(i);
 			}
 		}
@@ -245,23 +245,11 @@ public class MainFormController implements Initializable {
 	}
 
 	@FXML
-	protected void onCellClick() {
-		tableView.setOnMouseClicked(event -> {
-			if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
-				Document document = tableView.getSelectionModel().getSelectedItem();
-				document.setIsForDelete(!document.getIsForDelete());
-				tableView.refresh();
-			}
-		});
-	}
-
-	@FXML
 	protected void onRefreshButtonClick() {
 		DocumentManager documentManager = new DocumentManager();
 		ObservableList<Document> documentsData = FXCollections.observableArrayList(documentManager.getAllDocuments());
 		tableView.getItems().clear();
 		tableView.getItems().addAll(documentsData);
-		isColumn.setCellFactory(CheckBoxTableCell.forTableColumn(isColumn));
 		tableView.refresh();
 	}
 
