@@ -7,10 +7,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.hibernate.HibernateException;
-
-import java.io.IOException;
-
 
 public class InvoiceFormController {
 
@@ -21,7 +17,7 @@ public class InvoiceFormController {
 	public Button saveButton;
 
 	@FXML
-	protected void onInvoiceSaveButtonClick() throws IOException, HibernateException {
+	protected void onInvoiceSaveButtonClick() {
 		try {
 			InvoiceDoc invoiceDoc = new InvoiceDoc(
 					numberFiled.getText(),
